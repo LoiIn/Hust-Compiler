@@ -3,7 +3,7 @@ Program Example7;
   	      c2 = 'a';
           c3 = -0.068;
           c4 = 'hello';
-          c5 = 'world';
+          c5 = 'worlD';
     
     TYPE t1 = array(. 10 .) of integer;
     VAR  v1 : Integer;
@@ -13,7 +13,7 @@ Program Example7;
 
 Function F(p1 : Integer; Var p2 : char; var x : string) : Integer;
      Begin
-       f := 2 ** c1 ** 2;
+       f := c1 ** 2 ** 4 + c1 ** c1 - c1 / 4;
        x := 'hi' + 'hello';
      End;
 

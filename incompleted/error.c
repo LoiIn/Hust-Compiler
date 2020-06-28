@@ -16,7 +16,7 @@ struct ErrorMessage {
 };
 
 // TODO:
-struct ErrorMessage errors[31] = {
+struct ErrorMessage errors[32] = {
   {ERR_END_OF_COMMENT, "End of comment expected."},
   {ERR_IDENT_TOO_LONG, "Identifier too long."},
   {ERR_INVALID_CONSTANT_CHAR, "Invalid char constant or string."}, // GK1: Sửa lại lỗi định nghĩa
@@ -33,6 +33,7 @@ struct ErrorMessage errors[31] = {
   {ERR_INVALID_COMPARATOR, "A comparator expected."},
   {ERR_INVALID_EXPRESSION, "Invalid expression."},
   {ERR_INVALID_TERM, "Invalid term."},
+  {ERR_INVALID_EXP, "Invalid exp"},                     // ck2: them truong hop loi phan mu
   {ERR_INVALID_FACTOR, "Invalid factor."},
   {ERR_INVALID_LVALUE, "Invalid lvalue in assignment."},
   {ERR_INVALID_ARGUMENTS, "Wrong arguments."},

@@ -640,24 +640,6 @@ void compileSwitchCaseSt(void){
     }
   }
   eat(KW_END);
-  // compileStatements();
-
-
-  // while(lookAhead->tokenType != KW_DEFAULT){
-  //   eat(KW_CASE);
-  //   ConstantValue *constantV;
-  //   constantV = compileConstant();
-  //   checkTypeEquality(type1, constantV->type);
-  //   eat(SB_COLON);
-  //   compileStatements();
-  //   if(lookAhead -> tokenType == KW_BREAK) eat(KW_BREAK);
-  // }
-  // eat(KW_DEFAULT);
-  // eat(SB_COLON);
-  // compileStatements();
-  // if(lookAhead->tokenType == KW_BREAK) eat(KW_BREAK);
-  // eat(KW_END);
-  // eat(SB_SEMICOLON);
 }
 
 
@@ -827,6 +809,7 @@ Type* compileExpression3(void) {
       }
       return type1;
       // check the FOLLOW set
+
     case KW_TO:
     case KW_DO:
     case SB_RPAR:
@@ -856,9 +839,9 @@ Type* compileExpression3(void) {
 }
 
 // TODO:GK1   
-Type* compileTerm(void) {     // lay mot phan tu cua cac phep toan (+,  -, *, /)
+Type* compileTerm(void) {     // lay mot phan tu cua cac phep toan (*, /)
   Type* type;
-  type = compileFactor();
+  type = compileExp();
   checkBasicType(type);
   
   compileTerm2();
@@ -873,24 +856,16 @@ void compileTerm2(void) {     // lay cac phan tu tiep theo cua cac phep toan * v
   switch (lookAhead->tokenType) {
     case SB_TIMES:
       eat(SB_TIMES);
-      type = compileFactor();
+      type = compileExp();
       checkNumberType(type);
 
       compileTerm2();
       break;
     case SB_SLASH:
       eat(SB_SLASH);
-      type = compileFactor();
+      type = compileExp();
       checkNumberType(type);
 
-      compileTerm2();
-      break;
-
-    //TODO: bai1: them phan mu
-    case SB_MU:
-      eat(SB_MU);
-      type =  compileFactor();
-      checkNumberType(type);
       compileTerm2();
       break;
 
@@ -913,13 +888,65 @@ void compileTerm2(void) {     // lay cac phan tu tiep theo cua cac phep toan * v
     case KW_ELSE:
     case KW_THEN:
     case KW_WHILE:      // GK2
-    case KW_BEGIN:      // gk2
-    case KW_CASE:       // gk2
-    case KW_DEFAULT:    // gk2
-    case KW_BREAK:      // gk2
+    case KW_BEGIN:      // CK3
+    case KW_CASE:       // ck3
+    case KW_DEFAULT:    // ck3
+    case KW_BREAK:      // ck3
       break;
     default:
       error(ERR_INVALID_TERM, lookAhead->lineNo, lookAhead->colNo);
+  }
+}
+
+// TODO: CK2: them phep lay mu
+Type* compileExp(void){
+  Type* type;
+  type = compileFactor();
+  checkBasicType(type);
+  compileExp2();
+  return type;
+}
+
+//TODO: CK2: them phap lay mu
+void compileExp2(void){
+  Type* type;
+  switch (lookAhead->tokenType)
+  {
+  case SB_MU:
+    eat(SB_MU);
+    type = compileFactor();
+    checkNumberType(type);
+    compileExp2();
+    break;
+
+  // follow set
+  case SB_TIMES:
+  case SB_SLASH:
+  case SB_PLUS:
+  case SB_MINUS:
+  case KW_TO:
+  case KW_DO:
+  case SB_RPAR:
+  case SB_COMMA:
+  case SB_EQ:
+  case SB_NEQ:
+  case SB_LE:
+  case SB_LT:
+  case SB_GE:
+  case SB_GT:
+  case SB_RSEL:
+  case SB_SEMICOLON:
+  case KW_END:
+  case KW_ELSE:
+  case KW_THEN:
+  case KW_WHILE:      // GK2
+  case KW_BEGIN:      // gk2
+  case KW_CASE:       // gk2
+  case KW_DEFAULT:    // gk2
+  case KW_BREAK:      // gk2
+    break;
+  default:
+    error(ERR_INVALID_EXP, lookAhead->lineNo, lookAhead->colNo);
   }
 }
 

@@ -43,11 +43,8 @@ void compileIfSt(void);
 void compileElseSt(void);
 void compileWhileSt(void);
 void compileForSt(void);
-void compileSwitchCaseSt(void);
-
-// void compileWrites(void);
-// TODO:GK2
-void compileDoWhileSt(void);        // GK2 : them truong hop do while
+void compileSwitchCaseSt(void);      // TODO: CK3 them cau lenh switch case
+void compileDoWhileSt(void);        // TODO: GK2 them cau lenh do-while
 void compileArgument(Object* param);
 void compileArguments(ObjectNode* paramList);
 void compileCondition(void);
@@ -56,6 +53,8 @@ Type* compileExpression2(void);
 Type* compileExpression3(void);
 Type* compileTerm(void);
 void compileTerm2(void);
+Type* compileExp(void);             // TODO: CK2: them phep lay mu
+void compileExp2(void);             // TODO: CK2: them phep lay mu
 Type* compileFactor(void);
 Type* compileIndexes(Type* arrayType);
 
