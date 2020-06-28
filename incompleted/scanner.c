@@ -81,7 +81,7 @@ Token* readIdentKeyword(void) {
 Token* readNumber(void) {       // Sua lai truong hop doc number kieu int or kieu double
   Token *token = makeToken(TK_NONE, lineNo, colNo);
   int count = 0;
-  int floatPoint = 0;
+  int floatPoint = 0;          // dem so luong dau cham 
 
   while ((currentChar != EOF) && (charCodes[currentChar] == CHAR_DIGIT || charCodes[currentChar] == CHAR_PERIOD)) {
     if(charCodes[currentChar] == CHAR_PERIOD) floatPoint += 1;
@@ -212,7 +212,7 @@ Token* getToken(void) {
     readChar(); 
     return token;
   
-  //TODO: neu gap dau chem check xem gtri tiep theo phai so khong => readNumber 
+  //TODO: neu gap dau chem check xem gtri tiep theo phai so khong => readNumber    
   // neu khong thi tra ve dau cham
   case CHAR_PERIOD:                                                       // Đọc .
     ln = lineNo;

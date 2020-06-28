@@ -429,8 +429,6 @@ void compileStatement(void) {
   case KW_CALL:
     compileCallSt();
     break;
-  // case KW_WRITES:
-  //   break;
   case KW_BEGIN:
     compileGroupSt();
     break;
@@ -445,9 +443,14 @@ void compileStatement(void) {
     break;
   case KW_DO:
     compileDoWhileSt();
-  case KW_SWITCH:
+    break;
+  case KW_SWITCH:             // gk2
     compileSwitchCaseSt();
+    break;
     // EmptySt needs to check FOLLOW tokens
+  case KW_BREAK:              // gk2
+  case KW_CASE:               // gk2
+  case KW_DEFAULT:            // gk2
   case SB_SEMICOLON:
   case KW_END:
   case KW_ELSE:
@@ -583,14 +586,16 @@ void compileSwitchCaseSt(void){
   Type*  type;
   eat(KW_SWITCH);
   type = compileExpression();
+  checkBasicType(type);
   eat(KW_BEGIN);
 
-  while (lookAhead ->tokenType != KW_END){
-    switch (lookAhead -> tokenType)
+  while (lookAhead->tokenType != KW_END){
+    switch (lookAhead->tokenType)
     {
     case KW_CASE:
       eat(KW_CASE);
 
+      // an cac gia tri xay ra (constant value)
       switch (lookAhead->tokenType)
       {
       case TK_NUMBER:
@@ -613,7 +618,6 @@ void compileSwitchCaseSt(void){
         error(ERR_INVALID_CONSTANT, lookAhead->lineNo, lookAhead->colNo);
         break;
       }
-
       eat(SB_COLON);
       compileStatements();
       if(lookAhead->tokenType == KW_BREAK){
@@ -621,7 +625,9 @@ void compileSwitchCaseSt(void){
         compileStatements();
       } 
       break;
+      // het truong hop case
     
+    // truong hop doc duoc tu khoa default
     case KW_DEFAULT:
       eat(KW_DEFAULT);
       eat(SB_COLON);
@@ -632,10 +638,10 @@ void compileSwitchCaseSt(void){
       error(ERR_INVALID_STATEMENT, lookAhead->lineNo, lookAhead->colNo);
       break;
     }
-    eat(KW_END);
-
   }
-  
+  eat(KW_END);
+  // compileStatements();
+
 
   // while(lookAhead->tokenType != KW_DEFAULT){
   //   eat(KW_CASE);
@@ -746,10 +752,9 @@ void compileCondition(void) {     // Kiem tra kieu cua 1 phep gan du lieu
   checkTypeEquality(lhs, rhs);      // Check type cua 2 bieu thuc so sanh => So sanh bang
 }
 
-// TODO:GK3 => sua de cong duoc cac kieu bien
+// TODO:GK3 => check type cua cac gia tri truyen vap cho ham cong hoac tru
 Type* compileExpression(void) {
   Type* type;
-  
   switch (lookAhead->tokenType) {
   case SB_PLUS:
     eat(SB_PLUS);
@@ -773,29 +778,26 @@ Type* compileExpression(void) {
 }
 
 // TODO:GK3 => Sua de check cong dc cac kieu bien
-Type* compileExpression2(void) {  // GK1: Kiem tra type cua 1 phep +-*/
+Type* compileExpression2(void) {  // kiemm ta type cua cac phan tu cua phep cong hoac tru
   Type* type1;
   Type* type2;
-
   type1 = compileTerm();
   type2 = compileExpression3();
   if (type2 == NULL) return type1;
   else {
-    checkTypeInExpression(type1, type2);      // Check type cua phep +-*/ => So sanh ko bang
+    checkTypeInExpression(type1, type2);      // check kieu du lieu cua 2 phan tu
     return type1;
   }
 }
 
-// TODO: viet lai expression cho phan string
-
-// TODO:GK1
+// TODO:GK1         // lay dau + va lay tung toan hang phia sau
 Type* compileExpression3(void) {
   Type* type1;
   Type* type2;
 
   switch (lookAhead->tokenType) {
     case SB_PLUS:
-      eat(SB_PLUS);
+      eat(SB_PLUS);  
       type1 = compileTerm();
       if(type1 -> typeClass == TP_INT || type1 -> typeClass == TP_DOUBLE){
         checkNumberType(type1);
@@ -846,6 +848,7 @@ Type* compileExpression3(void) {
     case KW_DEFAULT:      // gk2
     case KW_BREAK:        // gk2
       return NULL;
+      break;
     default:
       error(ERR_INVALID_EXPRESSION, lookAhead->lineNo, lookAhead->colNo);
       return NULL;
@@ -853,9 +856,8 @@ Type* compileExpression3(void) {
 }
 
 // TODO:GK1   
-Type* compileTerm(void) {     // GK1: Check kieu du lieu cua phan truoc ve */
+Type* compileTerm(void) {     // lay mot phan tu cua cac phep toan (+,  -, *, /)
   Type* type;
-
   type = compileFactor();
   checkBasicType(type);
   
@@ -865,7 +867,7 @@ Type* compileTerm(void) {     // GK1: Check kieu du lieu cua phan truoc ve */
 }
 
 // TODO:
-void compileTerm2(void) {     // GK1: Check kieu du lieu 
+void compileTerm2(void) {     // lay cac phan tu tiep theo cua cac phep toan * va /
   Type* type;
 
   switch (lookAhead->tokenType) {
@@ -914,7 +916,7 @@ void compileTerm2(void) {     // GK1: Check kieu du lieu
     case KW_BEGIN:      // gk2
     case KW_CASE:       // gk2
     case KW_DEFAULT:    // gk2
-    case KW_BREAK:
+    case KW_BREAK:      // gk2
       break;
     default:
       error(ERR_INVALID_TERM, lookAhead->lineNo, lookAhead->colNo);
