@@ -114,17 +114,26 @@ Token* readConstChar(void) {    // Chinh ham thanh doc string or char
     return token;
   }
 
-  while ((currentChar != EOF) && (charCodes[currentChar] == CHAR_LETTER || charCodes[currentChar] == CHAR_DIGIT || charCodes[currentChar] == CHAR_SPACE)) {
+  while(charCodes[currentChar] != CHAR_SINGLEQUOTE){
+    if (currentChar == EOF || currentChar == '\n'){
+      error(ERR_INVALID_CONSTANT_CHAR, token->lineNo, token->colNo);
+      return token;
+    }
     token->string[count++] = (char)currentChar;
     readChar();
   }
-  token->string[count] = '\0';
+  
+  // while ((currentChar != EOF) && (charCodes[currentChar] == CHAR_LETTER || charCodes[currentChar] == CHAR_DIGIT || charCodes[currentChar] == CHAR_SPACE)) {
+  //   token->string[count++] = (char)currentChar;
+  //   readChar();
+  // }
+  // token->string[count] = '\0';
 
-  if (currentChar == EOF) {
-    token->tokenType = TK_NONE;
-    error(ERR_INVALID_CONSTANT_CHAR, token->lineNo, token->colNo);
-    return token;
-  }
+  // if (currentChar == EOF) {
+  //   token->tokenType = TK_NONE;
+  //   error(ERR_INVALID_CONSTANT_CHAR, token->lineNo, token->colNo);
+  //   return token;
+  // }
 
   if (charCodes[currentChar] == CHAR_SINGLEQUOTE) {
     readChar();
